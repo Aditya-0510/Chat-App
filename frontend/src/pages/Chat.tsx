@@ -110,7 +110,7 @@ const Chat = () => {
                 key={idx}
                 className={`${
                   msg.username === currentUsername
-                    ? "bg-purple-700 text-right"
+                    ? "bg-gray-800 text-right"
                     : "bg-gray-800"
                 } text-white rounded-lg p-4 shadow-lg break-words`}
               >

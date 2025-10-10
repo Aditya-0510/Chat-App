@@ -63,14 +63,19 @@ export default function Signup() {
         navigate("/signin");
       }, 2000);
     } 
-    catch (e) {
-        console.error("Signup failed:", e);
-        if (e.response?.status === 409) {
-        setError("An account with this email already exists. Please sign in instead.");
-        }
-        else
-        setError("Failed to create account. Please try again.");
-    } 
+    catch (e: unknown) {
+  console.error("Signup failed:", e);
+
+  if (axios.isAxiosError(e)) {
+    if (e.response?.status === 409) {
+      setError("An account with this email already exists. Please sign in instead.");
+    } else {
+      setError("Failed to create account. Please try again.");
+    }
+  } else {
+    setError("Something went wrong. Please try again.");
+  }
+}
     finally {
       setLoading(false);
     }
