@@ -1,7 +1,6 @@
 import {Router} from "express"
 import { RoomModel } from "../db.js"; 
 import authMiddleware from "../middleware.js";
-import { success } from "zod";
 
 const roomRouter = Router();
 
