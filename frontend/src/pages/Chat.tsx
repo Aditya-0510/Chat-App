@@ -60,7 +60,15 @@ const Chat = () => {
   }
 
   async function leaveRoom() {
-
+    if (socket) {
+        socket.send(
+            JSON.stringify({
+                type: "leave",
+                payload: { room }
+            })
+        );
+    }
+    
     try {
       const token = localStorage.getItem("token");
       await axios.post(
