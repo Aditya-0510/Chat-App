@@ -4,6 +4,7 @@ import cors from "cors"
 import userRouter from "./routes/user.js"
 import roomRouter from "./routes/room.js"
 import messageRouter from "./routes/message.js"
+import http from 'http';
 
 const app = express();
 app.use(express.json());
@@ -20,9 +21,11 @@ interface User {
     room : string
 }
 
-const wss = new WebSocketServer({
-    port: 8080
-})
+// const wss = new WebSocketServer({
+//     port: 8080
+// })
+const server = http.createServer(app);
+const wss = new WebSocketServer({ server })
 
 let userCount = 0;
 let allSockets: User[] = []
