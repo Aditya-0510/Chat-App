@@ -35,23 +35,34 @@ wss.on('connection', (socket) => {
     userCount++;
     console.log("User connected #" + userCount);
 
+    let currentUser = null;
     socket.on("message", (message) =>{
         let messageObj = JSON.parse(message as unknown as string)
 
         if(messageObj.type === "join"){
             console.log("User joined room "+ messageObj.payload.roomId);
-            allSockets.push({
+            allSockets = allSockets.filter(s => s.socket !== socket);
+            currentUser = {
                 socket: socket,
-                room : messageObj.payload.roomId
-            })
+                room: messageObj.payload.roomId
+            };
+            allSockets.push(currentUser)
             console.log(allSockets);
         }
+        
+        if(messageObj.type === "leave"){
+            console.log("User leaving room");
+            allSockets = allSockets.filter(s => s.socket !== socket);
+            currentUser = null;
+            console.log("Active sockets:", allSockets.length);
+        }
+
         if(messageObj.type === "chat"){
             console.log("message recieved " + messageObj.payload.message.toString());
             
-            const currentUser= allSockets.find((x) => x.socket == socket);
-            if(currentUser){
-                const currentUserRoom = currentUser.room;
+            const user= allSockets.find((x) => x.socket == socket);
+            if(user){
+                const currentUserRoom = user.room;
                 allSockets.forEach(s => {
                     if(s.room == currentUserRoom){
                         s.socket.send(
@@ -68,6 +79,17 @@ wss.on('connection', (socket) => {
             }
         } 
     })
+    socket.on('close', () => {
+        userCount--;
+        allSockets = allSockets.filter(x => x.socket !== socket);
+        console.log("User disconnected. Remaining: " + userCount);
+        console.log("Active sockets:", allSockets.length);
+    });
+
+    socket.on('error', (error) => {
+        console.error('WebSocket error:', error);
+        allSockets = allSockets.filter(x => x.socket !== socket);
+    });
 })
 
 const PORT = process.env.PORT || 8080;
