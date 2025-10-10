@@ -14,7 +14,7 @@ app.use("/api/v1/user", userRouter)
 app.use("/api/v1/room", roomRouter)
 app.use("/api/v1/message", messageRouter)
 
-app.listen(3000);
+// app.listen(3000);
 
 interface User {
     socket : WebSocket;
@@ -69,3 +69,8 @@ wss.on('connection', (socket) => {
         } 
     })
 })
+
+const PORT = process.env.PORT || 8080;
+server.listen(PORT, () => {
+    console.log(`Server (HTTP + WebSocket) running on port ${PORT}`);
+});
